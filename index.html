@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ROBOT CASH</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #eef3f8; }
+    .container { padding: 20px; }
+    .input, select {
+      width: 100%; padding: 10px; border-radius: 8px;
+      border: 1px solid #ccc; margin-bottom: 15px;
+    }
+    .btn {
+      padding: 12px; border: none; border-radius: 10px;
+      width: 100%; font-size: 15px; cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .btn-blue { background: #007bff; color: #fff; }
+    .btn-green { background: #28a745; color: #fff; }
+    .btn-orange { background: #fd7e14; color: #fff; }
+    .btn-red { background: #dc3545; color: #fff; }
+    .btn:hover { opacity: 0.9; }
+    .card {
+      background: #fff; padding: 15px; border-radius: 12px;
+      margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .produk-btn {
+      background: #17a2b8; color: white;
+      border: none; padding: 10px 0; width: 100%;
+      border-radius: 8px; cursor: pointer;
+    }
+    .produk-btn:hover { background: #138496; }
+    .nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      display: flex; background: #007bff; color: white;
+    }
+    .nav div {
+      flex: 1; text-align: center;
+      padding: 10px 0; font-size: 13px;
+      cursor: pointer;
+    }
+    .nav div:hover { background: #0056b3; }
+    .hidden { display: none; }
+    .avatar { font-size: 50px; text-align: center; margin: 20px 0; }
+    .flex { display: flex; gap: 10px; flex-wrap: wrap; }
+    .flex .btn { flex: 1; margin-bottom: 0; }
+    img.banner { width: 100%; border-radius: 12px; margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+
+<div id="auth">
+  <div class="container" id="register">
+    <img class="banner" src="https://img1.pixhost.to/images/6677/614246848_image.jpg" alt="Iklan">
+    <h2>Daftar ROBOT CASH</h2>
+    <input class="input" id="nama" placeholder="Nama">
+    <input class="input" id="gmail" placeholder="Gmail">
+    <input class="input" id="wa" placeholder="Nomor WhatsApp">
+    <input class="input" id="sandi" type="password" placeholder="Sandi">
+    <input class="input" id="konf" type="password" placeholder="Konfirmasi Sandi">
+    <input class="input" id="kode" placeholder="Kode Undangan (Opsional)">
+    <button class="btn btn-blue" onclick="daftar()">Daftar</button>
+    <p style="text-align:center">Sudah punya akun? <a href="#" onclick="tampilLogin()">Login</a></p>
+  </div>
+
+  <div class="container hidden" id="login">
+    <h2>Login</h2>
+    <input class="input" id="lgmail" placeholder="Gmail">
+    <input class="input" id="lsandi" type="password" placeholder="Sandi">
+    <button class="btn btn-green" onclick="login()">Login</button>
+    <p style="text-align:center">Belum punya akun? <a href="#" onclick="tampilDaftar()">Daftar</a></p>
+  </div>
+</div>
+<div id="app" class="hidden">
+  <div class="container" id="beranda">
+    <img class="banner" src="https://img1.pixhost.to/images/6677/614246848_image.jpg" alt="Iklan">
+    <h2>Selamat Datang di ROBOT CASH</h2>
+    <div class="card">
+      <p><b>Saldo:</b> <span id="saldo">Rp0</span></p>
+      <p>ROBOT CASH adalah platform investasi digital yang memberikan profit harian otomatis dari pembelian produk. Anda bisa mulai dari produk masa percobaan gratis!</p>
+    </div>
+    <div class="flex">
+      <button class="btn btn-blue" onclick="tampilUndang()">🎁 Undang Teman</button>
+      <button class="btn btn-green" onclick="tampilLayanan()">📞 Layanan</button>
+    </div>
+    <div class="flex" style="margin-top:10px;">
+      <button class="btn btn-orange" onclick="tampilTebus()">🎟️ Tebus Kode</button>
+    </div>
+  </div>
+
+  <div class="container hidden" id="produk">
+    <h2>Produk Investasi</h2>
+    <div id="list-produk"></div>
+  </div>
+
+  <div class="container hidden" id="riwayat">
+    <h2>Riwayat</h2>
+    <div id="riwayat-list"></div>
+  </div>
+
+  <div class="container hidden" id="profil">
+    <div class="avatar">👤</div>
+    <div class="card">
+      <p><b>Nama:</b> <span id="pfnama"></span></p>
+      <p><b>Gmail:</b> <span id="pfgmail"></span></p>
+      <p><b>No WA:</b> <span id="pfwa"></span></p>
+      <p><b>Kode Undangan:</b> <span id="pfkode"></span></p>
+    </div>
+    <div class="flex">
+      <button class="btn btn-blue" onclick="tampilDeposit()">💰 Deposit</button>
+      <button class="btn btn-green" onclick="tampilPenarikan()">🏧 Penarikan</button>
+    </div>
+    <div class="flex" style="margin-top:10px;">
+      <button class="btn btn-red" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <div class="container hidden" id="deposit">
+    <h2>Deposit</h2>
+    <img src="https://img1.pixhost.to/images/6655/613939473_kyami.jpg" alt="QRIS" class="banner">
+    <input class="input" id="nominalDepo" placeholder="Nominal">
+    <input class="input" id="namaPengirim" placeholder="Nama Pengirim">
+    <input class="input" id="buktiDepo" type="file">
+    <button class="btn btn-blue" onclick="konfirmasiDeposit()">Konfirmasi</button>
+  </div>
+
+  <div class="container hidden" id="penarikan">
+    <h2>Penarikan</h2>
+    <input class="input" id="namaPenerima" placeholder="Nama Penerima">
+    <input class="input" id="nominalWd" placeholder="Nominal">
+    <select class="input" id="jenisRekening" onchange="tampilRekening()">
+      <option value="">Pilih Jenis Rekening</option>
+      <option value="bank">Bank</option>
+      <option value="ewallet">E-Wallet</option>
+    </select>
+    <select class="input hidden" id="bankList">
+      <option value="">Pilih Bank</option>
+      <option>Bank BRI</option>
+      <option>Bank BCA</option>
+      <option>Bank Mandiri</option>
+    </select>
+    <select class="input hidden" id="ewalletList">
+      <option value="">Pilih E-Wallet</option>
+      <option>OVO</option>
+      <option>DANA</option>
+      <option>GOPAY</option>
+    </select>
+    <input class="input" id="nomorRek" placeholder="Nomor Rekening / Ewallet">
+    <button class="btn btn-green" onclick="kirimPenarikan()">Kirim</button>
+  </div>
+
+  <div class="container hidden" id="undang">
+    <h2>Undang Teman</h2>
+    <div class="card">
+      <p>Kode Undangan Anda:</p>
+      <h3 id="kodeSaya"></h3>
+    </div>
+    <h4>Pengguna yang Anda undang:</h4>
+    <div id="listUndangan" class="card"></div>
+  </div>
+
+  <div class="container hidden" id="layanan">
+    <h2>Layanan Pelanggan</h2>
+    <div class="flex">
+      <button class="btn btn-blue" onclick="window.open('https://wa.me/6283825754318','_blank')">WhatsApp</button>
+      <button class="btn btn-green" onclick="window.open('https://chat.whatsapp.com/GqazdlOCms4CqKXcmPaD78','_blank')">Grup WhatsApp</button>
+    </div>
+  </div>
+
+  <div class="container hidden" id="tebus">
+    <h2>Tebus Kode Hadiah</h2>
+    <div class="flex">
+      <input class="input" id="kodeTebus" maxlength="5" placeholder="Masukkan 5 Digit Kode">
+    </div>
+    <button class="btn btn-orange" onclick="tebusKode()">Tebus</button>
+    <p id="hasilTebus" style="margin-top:10px; font-weight: bold;"></p>
+  </div>
+</div>
+
+<div class="nav hidden" id="navigasi">
+  <div onclick="bukaMenu('beranda')">🏠<br>Beranda</div>
+  <div onclick="bukaMenu('produk')">📦<br>Produk</div>
+  <div onclick="bukaMenu('riwayat')">📜<br>Riwayat</div>
+  <div onclick="bukaMenu('profil')">👤<br>Profil</div>
+</div>
+<script>
+let user = null
+let users = JSON.parse(localStorage.getItem('users') || '[]')
+let deposits = JSON.parse(localStorage.getItem('deposits') || '[]')
+let withdrawals = JSON.parse(localStorage.getItem('withdrawals') || '[]')
+let products = [
+  { id: 'P0', nama: 'Masa Percobaan', harga: 0, profit: 7500, hari: 2, sekali: true },
+  { id: 'P1', nama: 'Paket 100rb', harga: 100000, profit: 6600, hari: 45 },
+  { id: 'P2', nama: 'Paket 200rb', harga: 200000, profit: 13000, hari: 45 },
+  { id: 'P3', nama: 'Paket 300rb', harga: 300000, profit: 20000, hari: 45 },
+  { id: 'P4', nama: 'Paket 400rb', harga: 400000, profit: 27000, hari: 45 },
+  { id: 'P5', nama: 'Paket 500rb', harga: 500000, profit: 34000, hari: 45 },
+  { id: 'P6', nama: 'Paket 600rb', harga: 600000, profit: 41000, hari: 45 },
+  { id: 'P7', nama: 'Paket 700rb', harga: 700000, profit: 48000, hari: 45 },
+  { id: 'P8', nama: 'Paket 800rb', harga: 800000, profit: 55000, hari: 45 }
+]
+let kodeHadiah = JSON.parse(localStorage.getItem('kodeHadiah') || '[]') // [{kode: 'ABCDE', jumlah: 1000}]
+
+function tampilLogin() {
+  document.getElementById('login').classList.remove('hidden')
+  document.getElementById('register').classList.add('hidden')
+}
+function tampilDaftar() {
+  document.getElementById('register').classList.remove('hidden')
+  document.getElementById('login').classList.add('hidden')
+}
+
+function daftar() {
+  let nama = document.getElementById('nama').value
+  let gmail = document.getElementById('gmail').value
+  let wa = document.getElementById('wa').value
+  let sandi = document.getElementById('sandi').value
+  let konf = document.getElementById('konf').value
+  let kode = document.getElementById('kode').value
+
+  if (!nama || !gmail || !wa || !sandi || !konf) return alert('Lengkapi semua data')
+  if (sandi !== konf) return alert('Konfirmasi sandi salah')
+  if (users.find(u => u.gmail === gmail)) return alert('Gmail sudah terdaftar')
+
+  let referral = kode || ''
+  let userBaru = {
+    nama, gmail, wa, sandi, referral, saldo: 0, produk: [], undang: [], riwayat: []
+  }
+
+  if (referral) {
+    let refUser = users.find(u => u.kode === referral)
+    if (refUser) {
+      refUser.undang.push({ nama: nama, gmail, depo: 0 })
+      localStorage.setItem('users', JSON.stringify(users))
+    }
+  }
+
+  userBaru.kode = generateKode()
+  users.push(userBaru)
+  localStorage.setItem('users', JSON.stringify(users))
+  loginLangsung(gmail, sandi)
+}
+
+function login() {
+  let gmail = document.getElementById('lgmail').value
+  let sandi = document.getElementById('lsandi').value
+  loginLangsung(gmail, sandi)
+}
+
+function loginLangsung(gmail, sandi) {
+  let u = users.find(u => u.gmail === gmail && u.sandi === sandi)
+  if (!u) return alert('Login gagal')
+  user = u
+  localStorage.setItem('login', gmail)
+  initApp()
+}
+
+function initApp() {
+  if (!user) {
+    let loginEmail = localStorage.getItem('login')
+    if (loginEmail) {
+      user = users.find(u => u.gmail === loginEmail)
+    }
+  }
+  if (!user) return
+  document.getElementById('auth').classList.add('hidden')
+  document.getElementById('app').classList.remove('hidden')
+  document.getElementById('navigasi').classList.remove('hidden')
+  document.getElementById('pfnama').innerText = user.nama
+  document.getElementById('pfgmail').innerText = user.gmail
+  document.getElementById('pfwa').innerText = user.wa
+  document.getElementById('pfkode').innerText = user.kode
+  document.getElementById('kodeSaya').innerText = user.kode
+  document.getElementById('saldo').innerText = formatRupiah(user.saldo)
+  tampilProduk()
+  tampilUndangan()
+  tampilRiwayat()
+}
+
+function logout() {
+  localStorage.removeItem('login')
+  location.reload()
+}
+
+function bukaMenu(menu) {
+  document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'))
+  document.getElementById(menu).classList.remove('hidden')
+}
+
+function tampilProduk() {
+  let kontainer = document.getElementById('list-produk')
+  kontainer.innerHTML = ''
+  products.forEach(p => {
+    let sudahBeli = user.produk.find(x => x.id === p.id)
+    if (p.sekali && sudahBeli) return
+    let card = document.createElement('div')
+    card.className = 'card'
+    card.innerHTML = `<b>${p.nama}</b><br>
+      Harga: ${formatRupiah(p.harga)}<br>
+      Profit / hari: ${formatRupiah(p.profit)}<br>
+      Durasi: ${p.hari} hari
+      <br><button class="produk-btn" onclick="beliProduk('${p.id}')">Beli</button>`
+    kontainer.appendChild(card)
+  })
+}
+
+function beliProduk(id) {
+  let produk = products.find(p => p.id === id)
+  if (user.saldo < produk.harga) return alert('Saldo tidak cukup')
+  user.saldo -= produk.harga
+  user.produk.push({ ...produk, sisa: produk.hari, terakhir: Date.now() })
+  user.riwayat.push({ jenis: 'beli', nama: produk.nama, nominal: produk.harga, waktu: new Date().toLocaleString() })
+  document.getElementById('saldo').innerText = formatRupiah(user.saldo)
+  simpan()
+  tampilProduk()
+  tampilRiwayat()
+}
+
+function profitHarian() {
+  let now = Date.now()
+  user.produk.forEach(p => {
+    if (p.sisa > 0 && now - p.terakhir >= 86400000) {
+      p.terakhir = now
+      p.sisa--
+      user.saldo += p.profit
+      user.riwayat.push({ jenis: 'profit', nama: p.nama, nominal: p.profit, waktu: new Date().toLocaleString() })
+    }
+  })
+  simpan()
+  document.getElementById('saldo').innerText = formatRupiah(user.saldo)
+}
+
+function simpan() {
+  let index = users.findIndex(u => u.gmail === user.gmail)
+  users[index] = user
+  localStorage.setItem('users', JSON.stringify(users))
+}
+
+function formatRupiah(angka) {
+  return 'Rp' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+}
+
+function tampilDeposit() { bukaMenu('deposit') }
+function tampilPenarikan() { bukaMenu('penarikan') }
+function tampilUndang() { bukaMenu('undang') }
+function tampilLayanan() { bukaMenu('layanan') }
+function tampilTebus() { bukaMenu('tebus') }
+
+function tampilRiwayat() {
+  let box = document.getElementById('riwayat-list')
+  box.innerHTML = ''
+  user.riwayat.slice().reverse().forEach(r => {
+    let row = document.createElement('div')
+    row.className = 'card'
+    row.innerHTML = `<b>${r.jenis.toUpperCase()}</b><br>${r.nama || ''}<br>${formatRupiah(r.nominal)}<br><span class='subtext'>${r.waktu}</span>`
+    box.appendChild(row)
+  })
+}
+
+function konfirmasiDeposit() {
+  let nominal = parseInt(document.getElementById('nominalDepo').value)
+  let nama = document.getElementById('namaPengirim').value
+  if (isNaN(nominal) || nominal < 50000) return alert('Minimal Rp50.000')
+  deposits.push({ email: user.gmail, nama, nominal, status: 'pending', waktu: new Date().toLocaleString() })
+  localStorage.setItem('deposits', JSON.stringify(deposits))
+  alert('Deposit dikirim, tunggu admin verifikasi')
+}
+
+function tampilRekening() {
+  document.getElementById('bankList').classList.add('hidden')
+  document.getElementById('ewalletList').classList.add('hidden')
+  if (document.getElementById('jenisRekening').value === 'bank') {
+    document.getElementById('bankList').classList.remove('hidden')
+  } else {
+    document.getElementById('ewalletList').classList.remove('hidden')
+  }
+}
+
+function kirimPenarikan() {
+  let nama = document.getElementById('namaPenerima').value
+  let nominal = parseInt(document.getElementById('nominalWd').value)
+  let jenis = document.getElementById('jenisRekening').value
+  let bank = jenis === 'bank' ? document.getElementById('bankList').value : document.getElementById('ewalletList').value
+  let nomor = document.getElementById('nomorRek').value
+  if (!nama || !nominal || nominal < 25000 || !jenis || !bank || !nomor) return alert('Isi semua data')
+  if (user.saldo < nominal) return alert('Saldo tidak cukup')
+  user.saldo -= nominal
+  withdrawals.push({ email: user.gmail, nama, nominal, jenis, bank, nomor, status: 'pending', waktu: new Date().toLocaleString() })
+  user.riwayat.push({ jenis: 'penarikan', nama: `${jenis.toUpperCase()} ${bank}`, nominal, waktu: new Date().toLocaleString() })
+  simpan()
+  localStorage.setItem('withdrawals', JSON.stringify(withdrawals))
+  alert('Penarikan dikirim, tunggu verifikasi admin')
+}
+
+function tampilUndangan() {
+  let list = document.getElementById('listUndangan')
+  list.innerHTML = ''
+  user.undang.forEach(u => {
+    let d = document.createElement('div')
+    d.innerText = `Pengguna ${sensor(u.nama)} - Deposit: ${formatRupiah(u.depo)}`
+    list.appendChild(d)
+  })
+}
+
+function sensor(nama) {
+  return nama.slice(0, 2) + '*'.repeat(nama.length - 2)
+}
+
+function generateKode() {
+  return Math.random().toString(36).substring(2, 8).toUpperCase()
+}
+
+function tebusKode() {
+  let kode = document.getElementById('kodeTebus').value.toUpperCase()
+  let hadiah = kodeHadiah.find(k => k.kode === kode)
+  if (!hadiah) return alert('Kode tidak valid')
+  user.saldo += hadiah.jumlah
+  user.riwayat.push({ jenis: 'hadiah', nama: 'Tebus Kode', nominal: hadiah.jumlah, waktu: new Date().toLocaleString() })
+  kodeHadiah = kodeHadiah.filter(k => k.kode !== kode)
+  simpan()
+  localStorage.setItem('kodeHadiah', JSON.stringify(kodeHadiah))
+  document.getElementById('hasilTebus').innerText = `Selamat! Anda mendapatkan ${formatRupiah(hadiah.jumlah)}`
+}
+
+initApp()
+setInterval(profitHarian, 3000)
+</script>
